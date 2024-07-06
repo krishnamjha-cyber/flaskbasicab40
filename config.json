@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0.0",
+  "components": [
+    {
+      "id": "backend",
+      "friendlyName": "Flask App",
+      "type": "api",
+      "appLocation": "/",
+      "ingressPort": "80"
+    }
+  ]
+}
