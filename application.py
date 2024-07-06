@@ -22,12 +22,12 @@ def hello():
    name = request.form.get('name')
 
    if name:
-       corrected_text = output=cb.caribe_corrector(name)
+       corrected_text = cb.caribe_corrector(name)
        print('Request for hello page received with name=%s' % corrected_text)
-       #return render_template('hello.html', name = corrected_text)
+       return render_template('index', name = corrected_text)
    else:
        print('Request for hello page received with no name or blank name -- redirecting')
-       #return render_template('hello.html')
+       return render_template('index')
 
 # Define route for correcting text
 @app.route('/correct', methods=['POST'])
@@ -36,8 +36,8 @@ def correct_text():
     text = data.get('text', '')
 
     # Correct text using Caribe
-    corrected_text = cb.caribe_corrector()
+    corrected_text = cb.caribe_corrector(text)
     # Return corrected text as JSON response
     return jsonify({'corrected_text': [corrected_text]})
 if __name__ == '__main__':
-  app.run(host='0.0.0.0', port=5001, debug=True)
+  app.run(host='0.0.0.0', port=5000, debug=True)
