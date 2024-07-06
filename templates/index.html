@@ -1,33 +1,79 @@
 <!doctype html>
+<html>
 <head>
     <title>Hello Azure - Python Quickstart</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Loader styles */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-radius: 50%;
+            border-top: 4px solid #3498db;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            display: none; /* Initially hidden */
+            margin: auto;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
-<html>
-   <body>
-     <main>
+<body>
+    <main>
         <div class="px-4 py-3 my-2 text-center">
             <img class="d-block mx-auto mb-4" src="{{ url_for('static', filename='images/azure-icon.svg') }}" alt="Azure Logo" width="192" height="192"/>
-            <!-- <img  src="/docs/5.1/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57"> -->
-            <h1 class="display-6 fw-bold text-primary">Welcome </h1>            
-          </div>
-        <form method="post">
+            <h1 class="display-6 fw-bold text-primary">Welcome</h1>
+        </div>
+        <form id="textForm">
             <div class="col-md-6 mx-auto text-center">
                 <label for="name" class="form-label fw-bold fs-5">Please Enter the text</label>
-
-                <!-- <p class="lead mb-2">Please Enter the text</p> -->
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center align-items-center my-1">
                     <input type="text" class="form-control" id="name" name="name" style="max-width: 256px;">
-                  </div>            
+                </div>
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center my-2">
-                  <button type="submit" class="btn btn-primary btn-lg px-4 gap-3">Correct</button>
-                </div>  
+                    <button type="submit" class="btn btn-primary btn-lg px-4 gap-3">Correct</button>
+                </div>
+                <div class="loader" id="loader"></div>
                 <div class="d-grid gap-2 d-sm-flex justify-content-sm-center align-items-center my-1">
-                  <label for="name" class="form-label fw-bold fs-5">{{name}}</label>
-                </div>           
+                    <label for="name" class="form-label fw-bold fs-5" id="displayText"></label>
+                </div>
             </div>
         </form>
-     </main>      
-   </body>
+    </main>
+
+    <script>
+        document.getElementById('textForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var inputText = document.getElementById('name').value;
+
+            // Show loader
+            document.getElementById('loader').style.display = 'block';
+
+            $.ajax({
+                url: '/correct',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ text: inputText }),
+                success: function(response) {
+                    document.getElementById('displayText').textContent = response.corrected_text;
+                },
+                complete: function() {
+                    // Hide loader after the request is complete
+                    document.getElementById('loader').style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
 </html>
